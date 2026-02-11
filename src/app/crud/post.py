@@ -1,9 +1,11 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from ..models.post import Post
 from ..schemas.post import PostCreate
 
-def create_test_post(db: Session, author_id: int, category_id: int):
-    if not db.query(Post).first():
+async def create_test_post(db: AsyncSession, author_id: int, category_id: int):
+    result = await db.execute(select(Post))
+    if not result.scalars().first():
         posts_data = [
             PostCreate(
                 title="Первый пост",
@@ -28,4 +30,5 @@ def create_test_post(db: Session, author_id: int, category_id: int):
         db.add_all(posts)
         db.commit()
 
-    return db.query(Post).all()
+    result = await db.execute(select(Post))
+    return result.scalars().all()
