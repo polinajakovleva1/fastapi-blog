@@ -1,6 +1,5 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import  Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from .config import settings
 
@@ -11,11 +10,6 @@ engine = create_engine(
 )
 
 class Base(DeclarativeBase): pass
-class Test(Base):
-    __tablename__ = "test"
- 
-    id = Column(Integer, primary_key=True, index=True)
-    value = Column(String)
 
 SessionLocal = sessionmaker(autoflush=False, bind=engine)
 

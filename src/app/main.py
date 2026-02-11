@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from .core.config import settings
-from .core.database import engine, Base, get_db, Test
+from .core.database import engine, Base, get_db
+from .crud.user import create_test_users
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
@@ -14,4 +15,4 @@ app = FastAPI(
 
 @app.get("/")
 async def root(db: Session = Depends(get_db)):
-    return db.query(Test).all()
+    return create_test_users(db)
