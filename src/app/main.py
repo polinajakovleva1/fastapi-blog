@@ -3,6 +3,7 @@ from .core.config import settings
 from .core.database import engine, Base, get_db
 from .crud.user import create_test_users
 from .crud.category import create_test_category
+from .crud.post import create_test_post
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
@@ -16,4 +17,4 @@ app = FastAPI(
 
 @app.get("/")
 async def root(db: Session = Depends(get_db)):
-    return create_test_category(db)
+    return create_test_post(db, 0, 1)
