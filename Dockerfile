@@ -7,6 +7,8 @@ ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /app/requirements.txt
 
+RUN pip config set global.root-user-action ignore
+
 RUN pip install --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -r /app/requirements.txt \
     && rm -rf /root/.cache/pip
