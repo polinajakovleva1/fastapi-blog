@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from ..core.database import get_db
 from .v1.auth import register_user, login_user, refr_token
+from .v1.users import get_current_user
 
 router = APIRouter(prefix="/api/v1")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
 
 @router.post("/auth/register")
 async def register(
@@ -26,3 +29,10 @@ async def refresh(
     db: AsyncSession = Depends(get_db)
 ):
     return await refr_token(refresh_token, db)
+
+@router.get("/users/me")
+async def users_me(
+    db: AsyncSession = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
+    return await get_current_user(db, token)
