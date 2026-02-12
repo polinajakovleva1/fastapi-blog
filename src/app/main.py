@@ -1,11 +1,11 @@
 from fastapi import FastAPI, Depends
 from .core.config import settings
 from .core.database import engine, Base, get_db
-from .crud.user import create_test_users
 from .crud.category import create_test_category
 from .crud.post import create_test_post
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
+from .api.router import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -21,6 +21,8 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.include_router(router)
+
 @app.get("/")
 async def root(db: AsyncSession = Depends(get_db)):
-    return await create_test_post(db, 0, 1)
+    return {"welcome"}

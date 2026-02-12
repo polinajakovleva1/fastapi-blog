@@ -1,14 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 from ..models.user import User
+from sqlalchemy import select
+from ..core.security import get_password_hash
 
-async def create_test_users(db: AsyncSession):
-    result = await db.execute(select(User))
-    if not result.scalars().first():
-        user_1 = User(email="email1@mail.com", hashed_password="1234")
-        user_2 = User(email="email2@mail.com", hashed_password="5678")
-        db.add_all([user_1, user_2])
-        db.commit()
+async def create_user(db: AsyncSession, email: str, password: str):
+    hashed_pass = get_password_hash(password)
+    new_user = User(email=email, hashed_password=hashed_pass)
+    db.add(new_user)
+    await db.commit()
+    await db.refresh(new_user)
+    return new_user
 
-    result = await db.execute(select(User))
-    return result.scalars().all()
+async def get_user(db: AsyncSession, email: str):
+    result = await db.execute(select(User).where(User.email == email))
+    return result.scalar_one_or_none()

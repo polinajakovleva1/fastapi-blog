@@ -1,16 +1,15 @@
-from passlib.context import CryptContext
-from jose import jwt, JWTError
+import bcrypt
+import jwt
+from jwt import PyJWTError
 from fastapi import HTTPException
 from .config import settings
 from datetime import datetime, timedelta, UTC
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+def get_password_hash(password: str):
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-def verify_password(password, hashed):
-    return pwd_context.verify(password, hashed)
+def verify_password(password: str, hashed: str):
+    return bcrypt.checkpw(password.encode('utf-8'), hashed)
 
 def create_refresh_token(data: dict):
     to_encode = data.copy()
@@ -33,5 +32,5 @@ def create_access_token(data: dict):
 def decode_token(token: str):
     try:
         return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-    except JWTError:
+    except PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
