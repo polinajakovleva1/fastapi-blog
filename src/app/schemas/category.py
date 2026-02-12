@@ -12,3 +12,10 @@ class CategoryCreate(BaseModel):
         if isinstance(data, dict) and 'name' in data:
             data['slug'] = slugify(data['name'])
         return data
+    
+class CategoryPublic(BaseModel):
+    name: str
+    slug: str
+    
+    class Config:
+        from_attributes = True

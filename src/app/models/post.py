@@ -1,6 +1,7 @@
 from ..core.database import Base
 from sqlalchemy import  Column, Integer, String, DateTime, Text, ForeignKey
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 class Post(Base):
     __tablename__ = "posts"
@@ -14,3 +15,5 @@ class Post(Base):
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     author_id = Column(Integer, ForeignKey("users.id"))
     category_id = Column(Integer, ForeignKey("categories.id"))
+    author = relationship("User", back_populates="posts", lazy="selectin")
+    category = relationship("Category", back_populates="posts", lazy="selectin")

@@ -3,25 +3,10 @@ from sqlalchemy import select
 from ..models.category import Category
 from ..schemas.category import CategoryCreate
 
-async def create_test_category(db: AsyncSession):
-    result = await db.execute(select(Category))
-    if not result.scalars().first():
-        categories_data = [
-            CategoryCreate(name="Новости"),
-            CategoryCreate(name="Технологии")
-        ]
-
-        categories = []
-
-        for data in categories_data:
-            category = Category(
-                name=data.name,
-                slug=data.slug
-            )
-            categories.append(category)
-
-        db.add_all(categories)
-        db.commit()
-
+async def get_categories(db: AsyncSession):
     result = await db.execute(select(Category))
     return result.scalars().all()
+
+async def get_categories_slug(db: AsyncSession, slug: str):
+    result = await db.execute(select(Category).where(Category.slug==slug))
+    return result.scalar_one_or_none()

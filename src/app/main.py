@@ -1,8 +1,5 @@
 from fastapi import FastAPI, Depends
-from .core.config import settings
 from .core.database import engine, Base, get_db
-from .crud.category import create_test_category
-from .crud.post import create_test_post
 from sqlalchemy.ext.asyncio import AsyncSession
 from contextlib import asynccontextmanager
 from .api.router import router

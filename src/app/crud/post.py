@@ -3,32 +3,15 @@ from sqlalchemy import select
 from ..models.post import Post
 from ..schemas.post import PostCreate
 
-async def create_test_post(db: AsyncSession, author_id: int, category_id: int):
+async def get_posts(db: AsyncSession):
     result = await db.execute(select(Post))
-    if not result.scalars().first():
-        posts_data = [
-            PostCreate(
-                title="Первый пост",
-                content="Содержание первого поста",
-                author_id=author_id,
-                category_id=category_id
-            )
-        ]
+    return result.scalars().all()
 
-        posts = []
-        
-        for data in posts_data:
-            post = Post(
-                title=data.title,
-                slug=data.slug,
-                content=data.content,
-                author_id=data.author_id,
-                category_id=data.category_id
-            )
-            posts.append(post)
+async def get_posts_slug(db: AsyncSession, slug: str):
+    post = select(Post).where(Post.slug==slug)
+    result = await db.execute(post)
+    return result.scalar_one_or_none()
 
-        db.add_all(posts)
-        db.commit()
-
-    result = await db.execute(select(Post))
+async def get_posts_category(db: AsyncSession, category_id: int):
+    result = await db.execute(select(Post).where(Post.category_id==category_id))
     return result.scalars().all()
