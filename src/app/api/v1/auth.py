@@ -16,8 +16,7 @@ async def register_user(form_data: OAuth2PasswordRequestForm, db: AsyncSession):
     user = await get_user(db, form_data.username)
     if user:
         raise HTTPException(status_code=400, detail="email is busy")
-    else:
-        await create_user(db, form_data.username, form_data.password)
+    await create_user(db, form_data.username, form_data.password)
     return await login_user(form_data, db)
 
 async def login_user(form_data: OAuth2PasswordRequestForm, db: AsyncSession):
@@ -29,7 +28,8 @@ async def login_user(form_data: OAuth2PasswordRequestForm, db: AsyncSession):
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(data={"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+    refresh_token = create_refresh_token(data={"sub": user.email})
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 async def refr_token(refresh_token: str, db: AsyncSession):

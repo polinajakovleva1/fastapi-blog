@@ -10,4 +10,4 @@ class Category(Base):
     name = Column(String, unique=True, nullable=False)
     slug = Column(String, unique=True, nullable=False)
     created_at = Column(DateTime, default=func.now(), nullable=False)
-    posts = relationship("Post", back_populates="category")
+    posts = relationship("Post", back_populates="category", cascade="all, delete-orphan")

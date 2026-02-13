@@ -1,5 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException
 from ..models.user import User
+from ..schemas.user import UserCreate
 from sqlalchemy import select
 from ..core.security import get_password_hash
 
@@ -14,3 +16,20 @@ async def create_user(db: AsyncSession, email: str, password: str):
 async def get_user(db: AsyncSession, email: str):
     result = await db.execute(select(User).where(User.email == email))
     return result.scalar_one_or_none()
+
+async def get_user_by_id(db: AsyncSession, user_id: int):
+    user = await db.get(User, user_id)
+    if not user:
+        raise HTTPException(404, "User not found")
+    return user
+
+async def get_user_list(db: AsyncSession):
+    result = await db.execute(select(User))
+    return result.scalars().all()
+
+async def change_user_role(db: AsyncSession, user_id: int):
+    user = await get_user_by_id(db, user_id)
+    user.role = "ADMIN" if user.role == "USER" else "USER"
+    await db.commit()
+    await db.refresh(user)
+    return user
