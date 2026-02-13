@@ -4,6 +4,13 @@ from datetime import datetime
 from slugify import slugify
 
 class CategoryCreate(BaseModel):
+    """
+    Схема для создания новой категории
+
+    Принимает:
+        name: название категории (обязательно)
+        slug: URL-идентификатор (опционально, генерируется из name)
+    """
     name: str
     slug: Optional[str] = None
 
@@ -15,6 +22,7 @@ class CategoryCreate(BaseModel):
         return data
     
 class CategoryPublic(BaseModel):
+    """Публичные данные категории"""
     name: str
     slug: str
     
@@ -23,6 +31,7 @@ class CategoryPublic(BaseModel):
     }
 
 class CategoryAdmin(BaseModel):
+    """Закрытые данные категории для отображения в объектах класса PostAdmin"""
     id: int
     name: str
     slug: str
@@ -33,6 +42,13 @@ class CategoryAdmin(BaseModel):
     }
 
 class CategoryUpdate(BaseModel):
+    """
+    Схема для обновления категории
+
+    принимает:
+        name: новое название (опционально)
+        slug: новый URL-идентификатор (опционально, генерируется из name)
+    """
     name: Optional[str] = None
     slug: Optional[str] = None
 

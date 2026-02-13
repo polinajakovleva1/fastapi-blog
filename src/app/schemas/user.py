@@ -1,10 +1,7 @@
 from pydantic import BaseModel
 
-class UserCreate(BaseModel):
-    email: str
-    password: str
-
 class UserPublic(BaseModel):
+    """Публичные данные пользователя"""
     email: str
     role: str
     
@@ -13,6 +10,7 @@ class UserPublic(BaseModel):
     }
 
 class UserAdmin(BaseModel):
+    """Закрытые данные пользователя для отображения в объектах класса PostAdmin"""
     id: int
     email: str
     role: str

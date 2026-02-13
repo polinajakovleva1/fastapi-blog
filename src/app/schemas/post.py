@@ -6,6 +6,17 @@ from .user import UserPublic, UserAdmin
 from .category import CategoryPublic, CategoryAdmin
 
 class PostCreate(BaseModel):
+    """
+    Схема для создания поста
+
+    принимает:
+        title: название поста (обязательно)
+        content: содержание поста (обязательно)
+        content_html: html содержания поста (опционально)
+        category_id: id категории (обязательно)
+        author_id: id автора (обязательно)
+        slug: URL-идентификатор (опционально, генерируется из name)
+    """
     title: str
     content: str
     content_html: Optional[str] = None
@@ -21,6 +32,7 @@ class PostCreate(BaseModel):
         return data
     
 class PostPublic(BaseModel):
+    """Публичные данные поста"""
     title: str
     slug: str
     content: str
@@ -35,6 +47,7 @@ class PostPublic(BaseModel):
     }
 
 class PostAdmin(BaseModel):
+    """Закрытые данные поста"""
     id: int
     title: str
     slug: str
@@ -52,6 +65,16 @@ class PostAdmin(BaseModel):
     }
 
 class PostUpdate(BaseModel):
+    """
+    Схема для обновления категории
+
+    принимает:
+        title: новое название поста (опционально)
+        content: новое содержание поста (опционально)
+        content_html: новый html содержания поста (опционально)
+        category_id: новый id категории (опционально)
+        slug: новый URL-идентификатор (опционально, генерируется из title)
+    """
     title: Optional[str] = None
     content: Optional[str] = None
     content_html: Optional[str] = None

@@ -6,25 +6,33 @@ from ..schemas.post import PostCreate, PostUpdate
 from ..utils.sanitizer import sanitize_html
 
 async def get_posts(db: AsyncSession):
+    """Получение списка всех объектов класса Post"""
     result = await db.execute(select(Post))
     return result.scalars().all()
 
 async def get_posts_slug(db: AsyncSession, slug: str):
+    """Получение объекта класса Post с указанным slug"""
     post = select(Post).where(Post.slug==slug)
     result = await db.execute(post)
     return result.scalar_one_or_none()
 
 async def get_posts_category(db: AsyncSession, category_id: int):
+    """Получение объекта класса Post с указанным category_id"""
     result = await db.execute(select(Post).where(Post.category_id==category_id))
     return result.scalars().all()
 
 async def get_post_by_id(db: AsyncSession, post_id: int):
+    """Получение объекта класса Post с указанным post_id"""
     post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(404, "Post not found")
     return post
 
 async def generate_unique_slug(db: AsyncSession, base_slug: str, exclude_id: int = None):
+    """
+    Генерация уникального slug
+    если slug занят, добавляет к нему значение counter
+    """
     slug = base_slug
     counter = 1
     while True:
@@ -35,6 +43,7 @@ async def generate_unique_slug(db: AsyncSession, base_slug: str, exclude_id: int
         counter += 1
 
 async def create_post(db: AsyncSession, data: PostCreate):
+    """Создание объекта класса Post"""
     unique_slug = await generate_unique_slug(db, data.slug)
     data.slug = unique_slug
     if data.content_html:
@@ -46,6 +55,7 @@ async def create_post(db: AsyncSession, data: PostCreate):
     return post
 
 async def update_post(db: AsyncSession, post_id: int, data: PostUpdate):
+    """Обновление объекта класса Post"""
     post = await get_post_by_id(db, post_id)
     if data.title is not None:
         post.title = data.title
@@ -63,6 +73,7 @@ async def update_post(db: AsyncSession, post_id: int, data: PostUpdate):
     return post
 
 async def delete_post(db: AsyncSession, post_id: int):
+    """Удаление объекта класса Post"""
     post = await get_post_by_id(db, post_id)
     await db.delete(post)
     await db.commit()

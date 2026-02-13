@@ -21,5 +21,5 @@ app = FastAPI(
 app.include_router(router)
 
 @app.get("/")
-async def root(db: AsyncSession = Depends(get_db)):
-    return {"welcome"}
+async def root():
+    return {"message": "welcome"}

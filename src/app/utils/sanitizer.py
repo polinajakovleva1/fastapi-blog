@@ -11,6 +11,13 @@ ALLOWED_ATTRIBUTES = {
 }
 
 def sanitize_html(content: str):
+    """
+    Очистка HTML-контента от XSS-уязвимостей
+
+    удаляет все теги и атрибуты, кроме разрешенных
+        теги: перечислены в ALLOWED_TAGS
+        атрибуты: перечислены в ALLOWED_ATTRIBUTES
+    """
     if not content:
         return ""
     
