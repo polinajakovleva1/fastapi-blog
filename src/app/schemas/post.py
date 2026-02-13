@@ -30,8 +30,9 @@ class PostPublic(BaseModel):
     author: UserPublic
     category: CategoryPublic
     
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True
+    }
 
 class PostAdmin(BaseModel):
     id: int
@@ -46,8 +47,9 @@ class PostAdmin(BaseModel):
     author: UserAdmin
     category: CategoryAdmin
     
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True
+    }
 
 class PostUpdate(BaseModel):
     title: Optional[str] = None

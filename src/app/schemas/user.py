@@ -8,13 +8,15 @@ class UserPublic(BaseModel):
     email: str
     role: str
     
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True
+    }
 
 class UserAdmin(BaseModel):
     id: int
     email: str
     role: str
     
-    class Config:
-        from_attributes = True
+    model_config = {
+        "from_attributes": True
+    }
